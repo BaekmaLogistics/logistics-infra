@@ -1,0 +1,45 @@
+name: Deploy on Dispatch
+
+on:
+  repository_dispatch:
+    types: [ deploy-service ]
+
+jobs:
+  deploy-on-dispatch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # .env 파일 생성
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      # scp를 이용해 .env 파일을 원격 서버로 전송
+      - name: Copy .env to Server via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".env"
+          target: ${{ secrets.WORD_DIRECTORY }}
+
+      # SSH 접속 후 pull 및 빌드/실행
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.WORD_DIRECTORY }}
+            
+            git pull origin main
+            
+            sudo docker compose pull
+            sudo docker compose up -d
+            
+            sudo docker image prune -f

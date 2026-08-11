@@ -1,0 +1,6 @@
+include:
+  - docker-compose.infra.yml
+  - docker-compose.config.yml
+  - docker-compose.discovery.yml
+  - docker-compose.gateway.yml
+  - docker-compose.notification.yml

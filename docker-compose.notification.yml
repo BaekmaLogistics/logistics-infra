@@ -1,0 +1,54 @@
+networks:
+  logistics-network:
+    external: true
+
+services:
+  logistics-notification-db:
+    image: postgres:15-alpine
+    container_name: logistics-notification-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d notification_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - logistics-network
+
+  logistics-notification-service:
+    image: ${DOCKERHUB_USERNAME}/logistics-notification-service:latest
+    container_name: logistics-notification-service
+    restart: unless-stopped
+    environment:
+      DB_HOST: logistics-notification-db
+      DB_PORT: 5432
+      DB_NAME: notification_db
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      RABBITMQ_HOST: logistics-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      REDIS_HOST: logistics-redis
+      REDIS_PORT: 6379
+      EUREKA_SERVER_URL: http://logistics-discovery-server:8761/eureka/
+      ZIPKIN_SERVER_URL: http://logistics-zipkin-server:9411/api/v2/spans
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL_NAME: ${OPENAI_MODEL_NAME}
+      OPENAI_TEMPERATURE: ${OPENAI_TEMPERATURE}
+      SLACK_API_URL: ${SLACK_API_URL}
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+    depends_on:
+      logistics-notification-db:
+        condition: service_healthy
+      logistics-config-server:
+        condition: service_healthy
+      logistics-discovery-server:
+        condition: service_healthy
+    networks:
+      - logistics-network
