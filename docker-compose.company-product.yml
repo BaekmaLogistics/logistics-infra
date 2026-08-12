@@ -1,0 +1,50 @@
+networks:
+  logistics-network:
+    external: true
+
+services:
+  logistics-company-product-db:
+    image: postgres:15-alpine
+    container_name: logistics-company-product-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: company-product_db
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d company-product_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - logistics-network
+
+  logistics-company-product-service:
+    image: ${DOCKERHUB_USERNAME}/logistics-company-product-service:latest
+    container_name: logistics-company-product-service
+    restart: unless-stopped
+    environment:
+      DB_HOST: logistics-company-product-db
+      DB_PORT: 5432
+      DB_NAME: company-product_db
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      RABBITMQ_HOST: logistics-rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      REDIS_HOST: logistics-redis
+      REDIS_PORT: 6379
+      EUREKA_SERVER_URL: http://logistics-discovery-server:8761/eureka/
+      ZIPKIN_SERVER_URL: http://logistics-zipkin-server:9411/api/v2/spans
+      CONFIG_SERVER_URL: http://logistics-config-server:18081
+    depends_on:
+      logistics-company-product-db:
+        condition: service_healthy
+      logistics-config-server:
+        condition: service_healthy
+      logistics-discovery-server:
+        condition: service_healthy
+    networks:
+      - logistics-network
