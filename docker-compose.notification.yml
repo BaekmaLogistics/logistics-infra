@@ -38,6 +38,7 @@ services:
       REDIS_PORT: 6379
       EUREKA_SERVER_URL: http://logistics-discovery-server:8761/eureka/
       ZIPKIN_SERVER_URL: http://logistics-zipkin-server:9411/api/v2/spans
+      CONFIG_SERVER_URL: http://logistics-config-server:18081
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL_NAME: ${OPENAI_MODEL_NAME}
       OPENAI_TEMPERATURE: ${OPENAI_TEMPERATURE}
