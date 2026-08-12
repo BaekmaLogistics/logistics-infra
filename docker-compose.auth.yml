@@ -3,16 +3,16 @@ networks:
     external: true
 
 services:
-  logistics-user-db:
+  logistics-auth-db:
     image: postgres:15-alpine
-    container_name: logistics-user-db
+    container_name: logistics-auth-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: user_db
+      POSTGRES_DB: auth_db
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d user_db" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d auth_db" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,14 +20,14 @@ services:
     networks:
       - logistics-network
 
-  logistics-user-service:
-    image: ${DOCKERHUB_USERNAME}/logistics-user-service:latest
-    container_name: logistics-user-service
+  logistics-auth-service:
+    image: ${DOCKERHUB_USERNAME}/logistics-auth-service:latest
+    container_name: logistics-auth-service
     restart: unless-stopped
     environment:
-      DB_HOST: logistics-user-db
+      DB_HOST: logistics-auth-db
       DB_PORT: 5432
-      DB_NAME: user_db
+      DB_NAME: auth_db
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       RABBITMQ_HOST: logistics-rabbitmq
@@ -38,9 +38,9 @@ services:
       REDIS_PORT: 6379
       EUREKA_SERVER_URL: http://logistics-discovery-server:8761/eureka/
       ZIPKIN_SERVER_URL: http://logistics-zipkin-server:9411/api/v2/spans
-      CONFIG_SERVER_URL: http://logistics-config-server:18081
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     depends_on:
-      logistics-user-db:
+      logistics-auth-db:
         condition: service_healthy
       logistics-config-server:
         condition: service_healthy

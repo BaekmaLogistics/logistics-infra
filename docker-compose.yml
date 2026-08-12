@@ -6,3 +6,7 @@ include:
   - docker-compose.notification.yml
   - docker-compose.hub.yml
   - docker-compose.user.yml
+  - docker-compose.auth.yml
+  - docker-compose.delivery.yml
+  - docker-compose.company-product.yml.yml
+  - docker-compose.order.yml

@@ -3,16 +3,16 @@ networks:
     external: true
 
 services:
-  logistics-user-db:
+  logistics-company-product-db:
     image: postgres:15-alpine
-    container_name: logistics-user-db
+    container_name: logistics-company-product-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: user_db
+      POSTGRES_DB: company-product_db
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d user_db" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d company-product_db" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,14 +20,14 @@ services:
     networks:
       - logistics-network
 
-  logistics-user-service:
-    image: ${DOCKERHUB_USERNAME}/logistics-user-service:latest
-    container_name: logistics-user-service
+  logistics-company-product-service:
+    image: ${DOCKERHUB_USERNAME}/logistics-company-product-service:latest
+    container_name: logistics-company-product-service
     restart: unless-stopped
     environment:
-      DB_HOST: logistics-user-db
+      DB_HOST: logistics-company-product-db
       DB_PORT: 5432
-      DB_NAME: user_db
+      DB_NAME: company-product_db
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       RABBITMQ_HOST: logistics-rabbitmq
@@ -40,7 +40,7 @@ services:
       ZIPKIN_SERVER_URL: http://logistics-zipkin-server:9411/api/v2/spans
       CONFIG_SERVER_URL: http://logistics-config-server:18081
     depends_on:
-      logistics-user-db:
+      logistics-company-product-db:
         condition: service_healthy
       logistics-config-server:
         condition: service_healthy
