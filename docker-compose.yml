@@ -8,5 +8,5 @@ include:
   - docker-compose.user.yml
   - docker-compose.auth.yml
   - docker-compose.delivery.yml
-  - docker-compose.company-product.yml.yml
+  - docker-compose.company-product.yml
   - docker-compose.order.yml
