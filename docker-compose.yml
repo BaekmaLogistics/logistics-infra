@@ -5,3 +5,4 @@ include:
   - docker-compose.gateway.yml
   - docker-compose.notification.yml
   - docker-compose.hub.yml
+  - docker-compose.user.yml
