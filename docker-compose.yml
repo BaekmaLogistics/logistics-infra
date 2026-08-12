@@ -4,3 +4,4 @@ include:
   - docker-compose.discovery.yml
   - docker-compose.gateway.yml
   - docker-compose.notification.yml
+  - docker-compose.hub.yml
