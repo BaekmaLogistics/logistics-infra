@@ -113,21 +113,6 @@ jobs:
 
 ### 2. 환경변수 설정
 프로젝트 최상단에 `.env` 파일을 작성합니다.
-```env
-# Database Settings
-POSTGRES_DB=logistics
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
-
-# RabbitMQ / Redis
-RABBITMQ_DEFAULT_USER=guest
-RABBITMQ_DEFAULT_PASS=guest
-
-# Infra Service Ports
-CONFIG_SERVER_PORT=8888
-EUREKA_SERVER_PORT=8761
-GATEWAY_PORT=8080
-```
 
 ### 3. 전체 인프라 및 서비스 실행
 ```bash
