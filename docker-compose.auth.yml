@@ -2,11 +2,16 @@ networks:
   logistics-network:
     external: true
 
+volumes:
+  auth_db_data:
+
 services:
   logistics-auth-db:
     image: postgres:15-alpine
     container_name: logistics-auth-db
     restart: unless-stopped
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: auth_db
       POSTGRES_USER: ${DB_USER:-postgres}

@@ -2,11 +2,16 @@ networks:
   logistics-network:
     external: true
 
+volumes:
+  hub_db_data:
+
 services:
   logistics-hub-db:
     image: postgres:15-alpine
     container_name: logistics-hub-db
     restart: unless-stopped
+    volumes:
+      - hub_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: hub_db
       POSTGRES_USER: ${DB_USER:-postgres}
