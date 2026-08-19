@@ -8,6 +8,7 @@ services:
     restart: unless-stopped
     container_name: logistics-gateway-server
     environment:
+      JAVA_TOOL_OPTIONS: -Xmx256m
       EUREKA_SERVER_URL: http://logistics-discovery-server:8761/eureka/
       ZIPKIN_SERVER_URL: http://logistics-zipkin-server:9411/api/v2/spans
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}

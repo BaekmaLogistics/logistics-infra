@@ -30,6 +30,7 @@ services:
     container_name: logistics-notification-service
     restart: unless-stopped
     environment:
+      JAVA_TOOL_OPTIONS: -Xmx256m
       DB_HOST: logistics-notification-db
       DB_PORT: 5432
       DB_NAME: notification_db

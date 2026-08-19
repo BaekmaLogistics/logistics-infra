@@ -30,6 +30,7 @@ services:
     container_name: logistics-user-service
     restart: unless-stopped
     environment:
+      JAVA_TOOL_OPTIONS: -Xmx256m
       DB_HOST: logistics-user-db
       DB_PORT: 5432
       DB_NAME: user_db

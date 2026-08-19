@@ -44,6 +44,8 @@ services:
     image: openzipkin/zipkin:latest
     container_name: logistics-zipkin-server
     restart: unless-stopped
+    environment:
+      JAVA_TOOL_OPTIONS: -Xmx256m
     healthcheck:
       test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9411/health || exit 1" ]
       interval: 10s

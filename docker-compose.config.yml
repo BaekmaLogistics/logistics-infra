@@ -8,6 +8,7 @@ services:
     restart: unless-stopped
     container_name: logistics-config-server
     environment:
+      JAVA_TOOL_OPTIONS: -Xmx256m
       CONFIG_REPOSITORY_URL: https://github.com/BaekmaLogistics/logistics-config-repo
       EUREKA_SERVER_URL: http://logistics-discovery-server:8761/eureka/
     healthcheck:
